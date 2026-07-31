@@ -1,4 +1,5 @@
 const canvas = document.getElementById("gameCanvas");
+
 const ctx = canvas.getContext("2d");
 
 
@@ -9,34 +10,40 @@ canvas.height = 360;
 
 const TILE_SIZE = 16;
 
+
 const MAP_WIDTH = 40;
 const MAP_HEIGHT = 22;
 
 
 
-// マップ作成
+// マップ
+
 const map = [];
 
 
-for(let y = 0; y < MAP_HEIGHT; y++){
 
-    map[y] = [];
+for(let y=0;y<MAP_HEIGHT;y++){
 
-    for(let x = 0; x < MAP_WIDTH; x++){
+
+    map[y]=[];
+
+
+    for(let x=0;x<MAP_WIDTH;x++){
+
 
         if(
-            x === 0 ||
-            y === 0 ||
-            x === MAP_WIDTH - 1 ||
-            y === MAP_HEIGHT - 1
+            x===0 ||
+            y===0 ||
+            x===MAP_WIDTH-1 ||
+            y===MAP_HEIGHT-1
         ){
 
-            map[y][x] = 1;
+            map[y][x]=1;
 
         }
         else{
 
-            map[y][x] = 0;
+            map[y][x]=0;
 
         }
 
@@ -45,11 +52,12 @@ for(let y = 0; y < MAP_HEIGHT; y++){
 }
 
 
+
 // 道
 
-for(let x = 5; x < 35; x++){
+for(let x=5;x<35;x++){
 
-    map[11][x] = 2;
+    map[11][x]=2;
 
 }
 
@@ -57,67 +65,34 @@ for(let x = 5; x < 35; x++){
 
 // プレイヤー
 
-const player = {
+const player={
 
     x:20,
+
     y:11
 
 };
 
 
 
-// キー入力
+// 移動処理
 
-const keys = {};
-
-
-document.addEventListener("keydown", e => {
-
-    keys[e.key] = true;
-
-});
+function move(dir){
 
 
-document.addEventListener("keyup", e => {
+    let nx=player.x;
 
-    keys[e.key] = false;
-
-});
+    let ny=player.y;
 
 
 
-// 移動
+    if(dir==="up") ny--;
 
-function movePlayer(){
+    if(dir==="down") ny++;
 
+    if(dir==="left") nx--;
 
-    let nx = player.x;
-    let ny = player.y;
-
-
-    if(keys["ArrowUp"]){
-
-        ny--;
-
-    }
-
-    if(keys["ArrowDown"]){
-
-        ny++;
-
-    }
-
-    if(keys["ArrowLeft"]){
-
-        nx--;
-
-    }
-
-    if(keys["ArrowRight"]){
-
-        nx++;
-
-    }
+    if(dir==="right") nx++;
 
 
 
@@ -126,8 +101,9 @@ function movePlayer(){
         map[ny][nx] !== 1
     ){
 
-        player.x = nx;
-        player.y = ny;
+        player.x=nx;
+
+        player.y=ny;
 
     }
 
@@ -135,8 +111,67 @@ function movePlayer(){
 
 
 
+// キーボード
 
-// マップ描画
+document.addEventListener(
+"keydown",
+e=>{
+
+
+    if(e.key==="ArrowUp")
+        move("up");
+
+
+    if(e.key==="ArrowDown")
+        move("down");
+
+
+    if(e.key==="ArrowLeft")
+        move("left");
+
+
+    if(e.key==="ArrowRight")
+        move("right");
+
+
+});
+
+
+
+
+// タップ操作
+
+document.querySelectorAll("button")
+.forEach(btn=>{
+
+
+    btn.addEventListener(
+    "touchstart",
+    ()=>{
+
+        move(
+            btn.dataset.dir
+        );
+
+    });
+
+
+    btn.addEventListener(
+    "click",
+    ()=>{
+
+        move(
+            btn.dataset.dir
+        );
+
+    });
+
+
+});
+
+
+
+
 
 function drawMap(){
 
@@ -145,6 +180,7 @@ function drawMap(){
 
 
         for(let x=0;x<MAP_WIDTH;x++){
+
 
 
             if(map[y][x]===0){
@@ -166,11 +202,17 @@ function drawMap(){
             }
 
 
+
             ctx.fillRect(
+
                 x*TILE_SIZE,
+
                 y*TILE_SIZE,
+
                 TILE_SIZE,
+
                 TILE_SIZE
+
             );
 
 
@@ -182,7 +224,6 @@ function drawMap(){
 
 
 
-// プレイヤー描画
 
 function drawPlayer(){
 
@@ -193,18 +234,20 @@ function drawPlayer(){
     ctx.fillRect(
 
         player.x*TILE_SIZE,
+
         player.y*TILE_SIZE,
 
         TILE_SIZE,
+
         TILE_SIZE
 
     );
+
 
 }
 
 
 
-// ゲームループ
 
 function gameLoop(){
 
@@ -215,9 +258,6 @@ function gameLoop(){
         canvas.width,
         canvas.height
     );
-
-
-    movePlayer();
 
 
     drawMap();
