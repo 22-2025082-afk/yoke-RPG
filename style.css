@@ -1,15 +1,54 @@
 body {
 
-    margin: 0;
-    background: black;
-    overflow: hidden;
+    margin:0;
+
+    background:black;
+
+    overflow:hidden;
+
+    touch-action:none;
 
 }
 
 
 canvas {
 
-    display: block;
-    margin: auto;
+    display:block;
+
+    margin:auto;
+
+}
+
+
+
+#controller {
+
+    text-align:center;
+
+    margin-top:10px;
+
+}
+
+
+
+button {
+
+    width:60px;
+
+    height:60px;
+
+    font-size:25px;
+
+    margin:5px;
+
+}
+
+
+
+#controller div {
+
+    display:flex;
+
+    justify-content:center;
 
 }
