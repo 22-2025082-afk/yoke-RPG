@@ -16,7 +16,10 @@ const MAP_HEIGHT = 22;
 
 
 
+// =====================
 // マップ
+// =====================
+
 
 const map = [];
 
@@ -41,6 +44,7 @@ for(let y=0;y<MAP_HEIGHT;y++){
             map[y][x]=1;
 
         }
+
         else{
 
             map[y][x]=0;
@@ -63,7 +67,11 @@ for(let x=5;x<35;x++){
 
 
 
+
+// =====================
 // プレイヤー
+// =====================
+
 
 const player={
 
@@ -75,7 +83,11 @@ const player={
 
 
 
-// 移動処理
+
+// =====================
+// 移動
+// =====================
+
 
 function move(dir){
 
@@ -86,13 +98,32 @@ function move(dir){
 
 
 
-    if(dir==="up") ny--;
+    if(dir==="up"){
 
-    if(dir==="down") ny++;
+        ny--;
 
-    if(dir==="left") nx--;
+    }
 
-    if(dir==="right") nx++;
+
+    if(dir==="down"){
+
+        ny++;
+
+    }
+
+
+    if(dir==="left"){
+
+        nx--;
+
+    }
+
+
+    if(dir==="right"){
+
+        nx++;
+
+    }
 
 
 
@@ -111,7 +142,12 @@ function move(dir){
 
 
 
-// キーボード
+
+
+// =====================
+// キーボード操作
+// =====================
+
 
 document.addEventListener(
 "keydown",
@@ -139,7 +175,11 @@ e=>{
 
 
 
+
+// =====================
 // タップ操作
+// =====================
+
 
 document.querySelectorAll("button")
 .forEach(btn=>{
@@ -149,28 +189,41 @@ document.querySelectorAll("button")
     "touchstart",
     ()=>{
 
+
         move(
             btn.dataset.dir
         );
 
+
     });
+
 
 
     btn.addEventListener(
     "click",
     ()=>{
 
+
         move(
             btn.dataset.dir
         );
 
+
     });
+
 
 
 });
 
 
 
+
+
+
+
+// =====================
+// 描画
+// =====================
 
 
 function drawMap(){
@@ -182,18 +235,19 @@ function drawMap(){
         for(let x=0;x<MAP_WIDTH;x++){
 
 
-
             if(map[y][x]===0){
 
                 ctx.fillStyle="#4caf50";
 
             }
 
+
             else if(map[y][x]===1){
 
                 ctx.fillStyle="#1b5e20";
 
             }
+
 
             else{
 
@@ -249,15 +303,22 @@ function drawPlayer(){
 
 
 
+
 function gameLoop(){
 
 
     ctx.clearRect(
+
         0,
+
         0,
+
         canvas.width,
+
         canvas.height
+
     );
+
 
 
     drawMap();
@@ -265,9 +326,12 @@ function gameLoop(){
     drawPlayer();
 
 
+
     requestAnimationFrame(gameLoop);
 
+
 }
+
 
 
 
