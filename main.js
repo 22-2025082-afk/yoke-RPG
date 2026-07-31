@@ -15,59 +15,61 @@ const VIEW_WIDTH = 20;
 const VIEW_HEIGHT = 12;
 
 
-// マップサイズ
-const MAP_WIDTH = 60;
-const MAP_HEIGHT = 60;
-
+// 村サイズ
+const MAP_WIDTH = 16;
+const MAP_HEIGHT = 16;
 
 
 
 // =====================
-// マップ作成
+// タイル
 // =====================
 
-const map = [];
-
-
-for(let y = 0; y < MAP_HEIGHT; y++){
-
-    map[y] = [];
-
-
-    for(let x = 0; x < MAP_WIDTH; x++){
-
-
-        if(
-            x === 0 ||
-            y === 0 ||
-            x === MAP_WIDTH - 1 ||
-            y === MAP_HEIGHT - 1
-        ){
-
-            map[y][x] = 1;
-
-        }
-
-        else{
-
-            map[y][x] = 0;
-
-        }
-
-    }
-
-}
+// 0 草
+// 1 木
+// 2 道
+// 3 水
+// 4 家
+// 5 祠
+// 6 噴水
 
 
 
-// 仮の道
+const map = [
 
-for(let x = 10; x < 50; x++){
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 
-    map[30][x] = 2;
+[1,0,0,0,4,4,0,0,0,0,4,4,0,0,0,1],
 
-}
+[1,0,0,0,4,4,0,0,0,0,4,4,0,0,0,1],
 
+[1,0,0,2,2,2,2,2,2,2,2,2,0,0,0,1],
+
+[1,0,0,2,0,0,0,6,0,0,0,2,0,0,0,1],
+
+[1,0,0,2,0,0,0,0,0,0,0,2,0,0,0,1],
+
+[1,0,0,2,0,0,0,0,0,0,0,2,0,0,0,1],
+
+[1,0,0,2,2,2,2,2,2,2,2,2,0,0,0,1],
+
+[1,0,0,0,0,0,0,5,0,0,0,0,0,0,0,1],
+
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+
+[1,4,4,0,0,0,0,0,0,0,0,0,0,4,4,1],
+
+[1,4,4,0,0,0,0,0,0,0,0,0,0,4,4,1],
+
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+
+];
 
 
 
@@ -79,12 +81,11 @@ for(let x = 10; x < 50; x++){
 
 const player = {
 
-    x:30,
+    x:8,
 
-    y:30
+    y:12
 
 };
-
 
 
 
@@ -107,7 +108,6 @@ const camera = {
 
 
 
-
 // =====================
 // 移動
 // =====================
@@ -121,19 +121,19 @@ function move(dir){
 
 
 
-    if(dir === "up")
+    if(dir==="up")
         ny--;
 
 
-    if(dir === "down")
+    if(dir==="down")
         ny++;
 
 
-    if(dir === "left")
+    if(dir==="left")
         nx--;
 
 
-    if(dir === "right")
+    if(dir==="right")
         nx++;
 
 
@@ -141,7 +141,8 @@ function move(dir){
 
     if(
         map[ny] &&
-        map[ny][nx] !== 1
+        map[ny][nx] !== 1 &&
+        map[ny][nx] !== 4
     ){
 
         player.x = nx;
@@ -156,52 +157,36 @@ function move(dir){
 
 
 
-
-
 // =====================
-// カメラ更新
+// カメラ
 // =====================
 
 function updateCamera(){
 
 
     camera.x =
-    player.x - Math.floor(VIEW_WIDTH / 2);
+    player.x - Math.floor(VIEW_WIDTH/2);
 
 
     camera.y =
-    player.y - Math.floor(VIEW_HEIGHT / 2);
+    player.y - Math.floor(VIEW_HEIGHT/2);
 
 
 
-
-    if(camera.x < 0){
-
+    if(camera.x < 0)
         camera.x = 0;
 
-    }
 
-
-    if(camera.y < 0){
-
+    if(camera.y < 0)
         camera.y = 0;
 
-    }
+
+    if(camera.x > MAP_WIDTH-VIEW_WIDTH)
+        camera.x = MAP_WIDTH-VIEW_WIDTH;
 
 
-
-    if(camera.x > MAP_WIDTH - VIEW_WIDTH){
-
-        camera.x = MAP_WIDTH - VIEW_WIDTH;
-
-    }
-
-
-    if(camera.y > MAP_HEIGHT - VIEW_HEIGHT){
-
-        camera.y = MAP_HEIGHT - VIEW_HEIGHT;
-
-    }
+    if(camera.y > MAP_HEIGHT-VIEW_HEIGHT)
+        camera.y = MAP_HEIGHT-VIEW_HEIGHT;
 
 }
 
@@ -209,32 +194,30 @@ function updateCamera(){
 
 
 
-
-
 // =====================
-// キーボード操作
+// 操作
 // =====================
+
 
 document.addEventListener(
 "keydown",
 e=>{
 
 
-    if(e.key === "ArrowUp")
+    if(e.key==="ArrowUp")
         move("up");
 
 
-    if(e.key === "ArrowDown")
+    if(e.key==="ArrowDown")
         move("down");
 
 
-    if(e.key === "ArrowLeft")
+    if(e.key==="ArrowLeft")
         move("left");
 
 
-    if(e.key === "ArrowRight")
+    if(e.key==="ArrowRight")
         move("right");
-
 
 });
 
@@ -242,25 +225,8 @@ e=>{
 
 
 
-
-
-
-// =====================
-// タップ操作
-// =====================
-
 document.querySelectorAll("button")
 .forEach(btn=>{
-
-
-    btn.addEventListener(
-    "touchstart",
-    ()=>{
-
-        move(btn.dataset.dir);
-
-    });
-
 
 
     btn.addEventListener(
@@ -272,7 +238,6 @@ document.querySelectorAll("button")
     });
 
 
-
 });
 
 
@@ -281,56 +246,64 @@ document.querySelectorAll("button")
 
 
 
-
 // =====================
-// マップ描画
+// 描画
 // =====================
 
 function drawMap(){
 
 
-    for(let y = 0; y < VIEW_HEIGHT; y++){
+    for(let y=0;y<VIEW_HEIGHT;y++){
 
 
-        for(let x = 0; x < VIEW_WIDTH; x++){
-
-
-
-            const mapX = x + camera.x;
-
-            const mapY = y + camera.y;
+        for(let x=0;x<VIEW_WIDTH;x++){
 
 
 
+            const mx = x + camera.x;
 
-            if(map[mapY][mapX] === 0){
-
-                ctx.fillStyle = "#4caf50";
-
-            }
+            const my = y + camera.y;
 
 
-            else if(map[mapY][mapX] === 1){
 
-                ctx.fillStyle = "#1b5e20";
-
-            }
+            let tile = map[my][mx];
 
 
-            else{
 
-                ctx.fillStyle = "#c8a165";
+            if(tile===0)
+                ctx.fillStyle="#4caf50";
 
-            }
 
+            if(tile===1)
+                ctx.fillStyle="#1b5e20";
+
+
+            if(tile===2)
+                ctx.fillStyle="#c8a165";
+
+
+            if(tile===3)
+                ctx.fillStyle="#2196f3";
+
+
+            if(tile===4)
+                ctx.fillStyle="#8d5524";
+
+
+            if(tile===5)
+                ctx.fillStyle="#eeeeee";
+
+
+            if(tile===6)
+                ctx.fillStyle="#00bcd4";
 
 
 
             ctx.fillRect(
 
-                x * TILE_SIZE,
+                x*TILE_SIZE,
 
-                y * TILE_SIZE,
+                y*TILE_SIZE,
 
                 TILE_SIZE,
 
@@ -348,35 +321,17 @@ function drawMap(){
 
 
 
-
-
-// =====================
-// プレイヤー描画
-// =====================
-
 function drawPlayer(){
 
 
-    ctx.fillStyle = "blue";
-
-
-
-    const screenX =
-    (player.x - camera.x) * TILE_SIZE;
-
-
-
-    const screenY =
-    (player.y - camera.y) * TILE_SIZE;
-
-
+    ctx.fillStyle="blue";
 
 
     ctx.fillRect(
 
-        screenX,
+        (player.x-camera.x)*TILE_SIZE,
 
-        screenY,
+        (player.y-camera.y)*TILE_SIZE,
 
         TILE_SIZE,
 
@@ -390,18 +345,10 @@ function drawPlayer(){
 
 
 
-
-
-
-// =====================
-// ゲームループ
-// =====================
-
 function gameLoop(){
 
 
     updateCamera();
-
 
 
     ctx.clearRect(
@@ -417,16 +364,15 @@ function gameLoop(){
     );
 
 
-
     drawMap();
 
     drawPlayer();
 
 
-
     requestAnimationFrame(gameLoop);
 
 }
+
 
 
 
