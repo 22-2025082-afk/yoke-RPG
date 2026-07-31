@@ -1,9 +1,7 @@
 body {
 
     margin: 0;
-
     background: black;
-
     overflow: hidden;
 
 }
@@ -12,7 +10,6 @@ body {
 canvas {
 
     display: block;
-
     margin: auto;
 
 }
