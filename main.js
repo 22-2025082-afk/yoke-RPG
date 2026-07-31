@@ -101,3 +101,33 @@ function drawMap(){
 
 
 drawMap();
+
+// プレイヤー
+
+const player = {
+
+    x: 20,
+    y: 11
+
+};
+
+
+function drawPlayer(){
+
+    ctx.fillStyle = "blue";
+
+
+    ctx.fillRect(
+
+        player.x * TILE_SIZE,
+        player.y * TILE_SIZE,
+
+        TILE_SIZE,
+        TILE_SIZE
+
+    );
+
+}
+
+
+drawPlayer();
