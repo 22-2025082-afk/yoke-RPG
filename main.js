@@ -15,10 +15,10 @@ const VIEW_WIDTH = 20;
 const VIEW_HEIGHT = 12;
 
 
-
 // マップサイズ
 const MAP_WIDTH = 60;
 const MAP_HEIGHT = 60;
+
 
 
 
@@ -60,7 +60,7 @@ for(let y = 0; y < MAP_HEIGHT; y++){
 
 
 
-// 道を作る
+// 仮の道
 
 for(let x = 10; x < 50; x++){
 
@@ -112,7 +112,6 @@ const camera = {
 // 移動
 // =====================
 
-
 function move(dir){
 
 
@@ -157,42 +156,52 @@ function move(dir){
 
 
 
+
+
 // =====================
 // カメラ更新
 // =====================
-
 
 function updateCamera(){
 
 
     camera.x =
-        player.x - Math.floor(VIEW_WIDTH / 2);
+    player.x - Math.floor(VIEW_WIDTH / 2);
 
 
     camera.y =
-        player.y - Math.floor(VIEW_HEIGHT / 2);
+    player.y - Math.floor(VIEW_HEIGHT / 2);
 
 
 
-    // 左上制限
 
-    if(camera.x < 0)
+    if(camera.x < 0){
+
         camera.x = 0;
 
+    }
 
-    if(camera.y < 0)
+
+    if(camera.y < 0){
+
         camera.y = 0;
 
+    }
 
 
-    // 右下制限
 
-    if(camera.x > MAP_WIDTH - VIEW_WIDTH)
+    if(camera.x > MAP_WIDTH - VIEW_WIDTH){
+
         camera.x = MAP_WIDTH - VIEW_WIDTH;
 
+    }
 
-    if(camera.y > MAP_HEIGHT - VIEW_HEIGHT)
+
+    if(camera.y > MAP_HEIGHT - VIEW_HEIGHT){
+
         camera.y = MAP_HEIGHT - VIEW_HEIGHT;
+
+    }
 
 }
 
@@ -203,28 +212,27 @@ function updateCamera(){
 
 
 // =====================
-// キーボード
+// キーボード操作
 // =====================
-
 
 document.addEventListener(
 "keydown",
 e=>{
 
 
-    if(e.key==="ArrowUp")
+    if(e.key === "ArrowUp")
         move("up");
 
 
-    if(e.key==="ArrowDown")
+    if(e.key === "ArrowDown")
         move("down");
 
 
-    if(e.key==="ArrowLeft")
+    if(e.key === "ArrowLeft")
         move("left");
 
 
-    if(e.key==="ArrowRight")
+    if(e.key === "ArrowRight")
         move("right");
 
 
@@ -235,10 +243,11 @@ e=>{
 
 
 
+
+
 // =====================
 // タップ操作
 // =====================
-
 
 document.querySelectorAll("button")
 .forEach(btn=>{
@@ -253,6 +262,7 @@ document.querySelectorAll("button")
     });
 
 
+
     btn.addEventListener(
     "click",
     ()=>{
@@ -260,6 +270,7 @@ document.querySelectorAll("button")
         move(btn.dataset.dir);
 
     });
+
 
 
 });
@@ -272,44 +283,43 @@ document.querySelectorAll("button")
 
 
 // =====================
-// 描画
+// マップ描画
 // =====================
-
 
 function drawMap(){
 
 
-    for(let y=0; y<VIEW_HEIGHT; y++){
+    for(let y = 0; y < VIEW_HEIGHT; y++){
 
 
-        for(let x=0; x<VIEW_WIDTH; x++){
+        for(let x = 0; x < VIEW_WIDTH; x++){
 
 
 
-            const mapX =
-            x + camera.x;
+            const mapX = x + camera.x;
 
+            const mapY = y + camera.y;
 
-            const mapY =
-            y + camera.y;
 
 
 
             if(map[mapY][mapX] === 0){
 
-                ctx.fillStyle="#4caf50";
+                ctx.fillStyle = "#4caf50";
 
             }
+
 
             else if(map[mapY][mapX] === 1){
 
-                ctx.fillStyle="#1b5e20";
+                ctx.fillStyle = "#1b5e20";
 
             }
 
+
             else{
 
-                ctx.fillStyle="#c8a165";
+                ctx.fillStyle = "#c8a165";
 
             }
 
@@ -318,9 +328,9 @@ function drawMap(){
 
             ctx.fillRect(
 
-                x*TILE_SIZE,
+                x * TILE_SIZE,
 
-                y*TILE_SIZE,
+                y * TILE_SIZE,
 
                 TILE_SIZE,
 
@@ -340,17 +350,33 @@ function drawMap(){
 
 
 
+// =====================
+// プレイヤー描画
+// =====================
+
 function drawPlayer(){
 
 
-    ctx.fillStyle="blue";
+    ctx.fillStyle = "blue";
+
+
+
+    const screenX =
+    (player.x - camera.x) * TILE_SIZE;
+
+
+
+    const screenY =
+    (player.y - camera.y) * TILE_SIZE;
+
+
 
 
     ctx.fillRect(
 
-        Math.floor(VIEW_WIDTH/2) * TILE_SIZE,
+        screenX,
 
-        Math.floor(VIEW_HEIGHT/2) * TILE_SIZE,
+        screenY,
 
         TILE_SIZE,
 
@@ -367,10 +393,15 @@ function drawPlayer(){
 
 
 
+// =====================
+// ゲームループ
+// =====================
+
 function gameLoop(){
 
 
     updateCamera();
+
 
 
     ctx.clearRect(
@@ -396,7 +427,6 @@ function gameLoop(){
     requestAnimationFrame(gameLoop);
 
 }
-
 
 
 
