@@ -1,53 +1,56 @@
 const canvas = document.getElementById("gameCanvas");
-
 const ctx = canvas.getContext("2d");
 
 
-canvas.width = 640;
-canvas.height = 360;
+canvas.width = 320;
+canvas.height = 192;
 
 
 
 const TILE_SIZE = 16;
 
 
-const MAP_WIDTH = 40;
-const MAP_HEIGHT = 22;
+// 表示範囲
+const VIEW_WIDTH = 20;
+const VIEW_HEIGHT = 12;
+
+
+
+// マップサイズ
+const MAP_WIDTH = 60;
+const MAP_HEIGHT = 60;
 
 
 
 // =====================
-// マップ
+// マップ作成
 // =====================
-
 
 const map = [];
 
 
+for(let y = 0; y < MAP_HEIGHT; y++){
 
-for(let y=0;y<MAP_HEIGHT;y++){
-
-
-    map[y]=[];
+    map[y] = [];
 
 
-    for(let x=0;x<MAP_WIDTH;x++){
+    for(let x = 0; x < MAP_WIDTH; x++){
 
 
         if(
-            x===0 ||
-            y===0 ||
-            x===MAP_WIDTH-1 ||
-            y===MAP_HEIGHT-1
+            x === 0 ||
+            y === 0 ||
+            x === MAP_WIDTH - 1 ||
+            y === MAP_HEIGHT - 1
         ){
 
-            map[y][x]=1;
+            map[y][x] = 1;
 
         }
 
         else{
 
-            map[y][x]=0;
+            map[y][x] = 0;
 
         }
 
@@ -57,13 +60,15 @@ for(let y=0;y<MAP_HEIGHT;y++){
 
 
 
-// 道
+// 道を作る
 
-for(let x=5;x<35;x++){
+for(let x = 10; x < 50; x++){
 
-    map[11][x]=2;
+    map[30][x] = 2;
 
 }
+
+
 
 
 
@@ -72,14 +77,33 @@ for(let x=5;x<35;x++){
 // プレイヤー
 // =====================
 
+const player = {
 
-const player={
+    x:30,
 
-    x:20,
-
-    y:11
+    y:30
 
 };
+
+
+
+
+
+
+// =====================
+// カメラ
+// =====================
+
+const camera = {
+
+    x:0,
+
+    y:0
+
+};
+
+
+
 
 
 
@@ -92,38 +116,27 @@ const player={
 function move(dir){
 
 
-    let nx=player.x;
+    let nx = player.x;
 
-    let ny=player.y;
+    let ny = player.y;
 
 
 
-    if(dir==="up"){
-
+    if(dir === "up")
         ny--;
 
-    }
 
-
-    if(dir==="down"){
-
+    if(dir === "down")
         ny++;
 
-    }
 
-
-    if(dir==="left"){
-
+    if(dir === "left")
         nx--;
 
-    }
 
-
-    if(dir==="right"){
-
+    if(dir === "right")
         nx++;
 
-    }
 
 
 
@@ -132,9 +145,9 @@ function move(dir){
         map[ny][nx] !== 1
     ){
 
-        player.x=nx;
+        player.x = nx;
 
-        player.y=ny;
+        player.y = ny;
 
     }
 
@@ -145,7 +158,52 @@ function move(dir){
 
 
 // =====================
-// キーボード操作
+// カメラ更新
+// =====================
+
+
+function updateCamera(){
+
+
+    camera.x =
+        player.x - Math.floor(VIEW_WIDTH / 2);
+
+
+    camera.y =
+        player.y - Math.floor(VIEW_HEIGHT / 2);
+
+
+
+    // 左上制限
+
+    if(camera.x < 0)
+        camera.x = 0;
+
+
+    if(camera.y < 0)
+        camera.y = 0;
+
+
+
+    // 右下制限
+
+    if(camera.x > MAP_WIDTH - VIEW_WIDTH)
+        camera.x = MAP_WIDTH - VIEW_WIDTH;
+
+
+    if(camera.y > MAP_HEIGHT - VIEW_HEIGHT)
+        camera.y = MAP_HEIGHT - VIEW_HEIGHT;
+
+}
+
+
+
+
+
+
+
+// =====================
+// キーボード
 // =====================
 
 
@@ -176,6 +234,7 @@ e=>{
 
 
 
+
 // =====================
 // タップ操作
 // =====================
@@ -189,31 +248,22 @@ document.querySelectorAll("button")
     "touchstart",
     ()=>{
 
-
-        move(
-            btn.dataset.dir
-        );
-
+        move(btn.dataset.dir);
 
     });
-
 
 
     btn.addEventListener(
     "click",
     ()=>{
 
-
-        move(
-            btn.dataset.dir
-        );
-
+        move(btn.dataset.dir);
 
     });
 
 
-
 });
+
 
 
 
@@ -229,31 +279,40 @@ document.querySelectorAll("button")
 function drawMap(){
 
 
-    for(let y=0;y<MAP_HEIGHT;y++){
+    for(let y=0; y<VIEW_HEIGHT; y++){
 
 
-        for(let x=0;x<MAP_WIDTH;x++){
+        for(let x=0; x<VIEW_WIDTH; x++){
 
 
-            if(map[y][x]===0){
+
+            const mapX =
+            x + camera.x;
+
+
+            const mapY =
+            y + camera.y;
+
+
+
+            if(map[mapY][mapX] === 0){
 
                 ctx.fillStyle="#4caf50";
 
             }
 
-
-            else if(map[y][x]===1){
+            else if(map[mapY][mapX] === 1){
 
                 ctx.fillStyle="#1b5e20";
 
             }
-
 
             else{
 
                 ctx.fillStyle="#c8a165";
 
             }
+
 
 
 
@@ -269,12 +328,14 @@ function drawMap(){
 
             );
 
-
         }
 
     }
 
 }
+
+
+
 
 
 
@@ -287,9 +348,9 @@ function drawPlayer(){
 
     ctx.fillRect(
 
-        player.x*TILE_SIZE,
+        Math.floor(VIEW_WIDTH/2) * TILE_SIZE,
 
-        player.y*TILE_SIZE,
+        Math.floor(VIEW_HEIGHT/2) * TILE_SIZE,
 
         TILE_SIZE,
 
@@ -297,14 +358,19 @@ function drawPlayer(){
 
     );
 
-
 }
 
 
 
 
 
+
+
+
 function gameLoop(){
+
+
+    updateCamera();
 
 
     ctx.clearRect(
@@ -329,8 +395,8 @@ function gameLoop(){
 
     requestAnimationFrame(gameLoop);
 
-
 }
+
 
 
 
