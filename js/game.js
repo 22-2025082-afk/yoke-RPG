@@ -7,11 +7,15 @@ function startGame(c, context){
     canvas = c;
     ctx = context;
 
+
     gameLoop();
+
 }
 
 
+
 function gameLoop(){
+
 
     ctx.clearRect(
         0,
@@ -22,8 +26,10 @@ function gameLoop(){
 
 
     drawMap(ctx);
+
     drawPlayer(ctx);
 
 
     requestAnimationFrame(gameLoop);
+
 }
