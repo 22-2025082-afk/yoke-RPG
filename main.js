@@ -131,3 +131,12 @@ function drawPlayer(){
 
 
 drawPlayer();
+
+ctx.fillStyle = "blue";
+
+ctx.fillRect(
+    320,
+    176,
+    16,
+    16
+);
